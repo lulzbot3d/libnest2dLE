@@ -121,8 +121,8 @@ endif()
 
 ExternalProject_Add(
     rp_Boost
-    URL "https://dl.bintray.com/boostorg/release/1.70.0/source/boost_1_70_0.tar.gz"
-    URL_HASH SHA256=882b48708d211a5f48e60b0124cf5863c1534cd544ecd0664bb534a4b5d506e9
+    URL "http://sourceforge.net/projects/boost/files/boost/1.67.0/boost_1_67_0.tar.gz"
+    URL_HASH SHA256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
     CONFIGURE_COMMAND "${_bootstrap_cmd}"
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/common.jam ./tools/build/src/tools/common.jam
     BUILD_COMMAND "${_build_cmd}"
