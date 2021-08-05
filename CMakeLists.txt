@@ -2,8 +2,10 @@ cmake_minimum_required(VERSION 3.1)
 
 project(Libnest2D)
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED)
+# Use C++17 Standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Add our own cmake module path.
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules/)
@@ -160,7 +162,7 @@ install(
   FILES
     "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/FindClipper.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/Findclipper.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/FindNLopt.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/FindTBB.cmake"
   DESTINATION
