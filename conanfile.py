@@ -8,7 +8,7 @@ required_conan_version = ">=1.42"
 
 
 class libnest2dConan(ConanFile):
-    name = "nest2d"
+    name = "libnest2d"
     version = "4.13.0-alpha+001"
     license = "LGPL-3.0"
     author = "Ultimaker B.V."
@@ -76,7 +76,6 @@ class libnest2dConan(ConanFile):
     def layout(self):
         cmake_layout(self)
         self.cpp.source.includedirs = ["include"]
-        self.cpp.package.libs = [f"nest2d_{self.options.geometries}_{self.options.optimizer}"]
 
     def generate(self):
         cmake = CMakeDeps(self)
