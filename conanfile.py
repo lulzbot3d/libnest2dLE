@@ -4,7 +4,7 @@ from conan.tools.layout import cmake_layout
 from conan.tools.files.packager import AutoPackager
 
 
-required_conan_version = ">=1.42"
+required_conan_version = ">=1.44.1"
 
 
 class libnest2dConan(ConanFile):
@@ -121,5 +121,3 @@ class libnest2dConan(ConanFile):
     def package_id(self):
         if self.options.header_only:
             self.info.header_only()
-        else:
-            self.info.requires.full_version_mode()
