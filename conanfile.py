@@ -9,20 +9,13 @@ required_conan_version = ">=1.44.1"
 
 class libnest2dConan(ConanFile):
     name = "libnest2d"
-    version = "5.0.0"
     license = "LGPL-3.0"
     author = "Ultimaker B.V."
     url = "https://github.com/Ultimaker/libnest2d"
     description = "2D irregular bin packaging and nesting library written in modern C++"
     topics = ("conan", "cura", "prusaslicer", "nesting", "c++", "bin packaging")
     settings = "os", "compiler", "build_type", "arch"
-    revision_mode = "scm"
-    build_policy = "missing"
-    default_user = "ultimaker"
-    default_channel = "testing"
     exports = "LICENSE*"
-    python_requires = ["UltimakerBase/0.1@ultimaker/testing"]
-    python_requires_extend = "UltimakerBase.UltimakerBase"
     options = {
         "shared": [True, False],
         "fPIC": [True, False],
