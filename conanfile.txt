@@ -1,0 +1,14 @@
+[requires]
+clipper/6.4.2
+boost/1.70.0
+nlopt/2.7.0
+catch2/2.9.2
+
+[generators]
+VirtualRunEnv
+VirtualBuildEnv
+CMakeDeps
+CMakeToolchain
+json
+
+[options]

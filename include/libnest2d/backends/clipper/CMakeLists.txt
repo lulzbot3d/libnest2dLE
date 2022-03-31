@@ -1,17 +1,12 @@
 add_library(clipperBackend INTERFACE)
 
-find_package(clipper 6.1 QUIET)
-if(NOT TARGET clipper::clipper)
-    message(STATUS "Using require_package to obtain Clipper")
-    require_package(Clipper 6.1 REQUIRED)
-    add_library(clipper::clipper INTERFACE IMPORTED)
-endif()
+find_package(clipper 6.1 REQUIRED)
 target_link_libraries(clipperBackend INTERFACE clipper::clipper)
 
 
 # Clipper backend is not enough on its own, it still need some functions
 # from Boost geometry
-require_package(boost 1.58 REQUIRED)
+find_package(boost 1.58 REQUIRED)
 
 if(TARGET boost::boost)
     target_link_libraries(clipperBackend INTERFACE boost::boost )
@@ -26,4 +21,4 @@ include/libnest2d/backends/clipper/clipper_polygon.hpp
 set(LIBNEST2D_SRCFILES ${LIBNEST2D_SRCFILES} PARENT_SCOPE)
 
 install(TARGETS clipperBackend EXPORT Libnest2DTargets INCLUDES DESTINATION include)
-set(LIBNEST2D_PUBLIC_PACKAGES "${LIBNEST2D_PUBLIC_PACKAGES};Boost;Clipper" CACHE INTERNAL "")
+set(LIBNEST2D_PUBLIC_PACKAGES "${LIBNEST2D_PUBLIC_PACKAGES};boost;clipper" CACHE INTERNAL "")

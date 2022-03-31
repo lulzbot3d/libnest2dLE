@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 
 project(Libnest2D)
+include(cmake_modules/conan.cmake)
 
 # Use C++17 Standard
 set(CMAKE_CXX_STANDARD 17)
@@ -9,8 +10,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Add our own cmake module path.
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules/)
-
-include(RequirePackage)
 
 option(LIBNEST2D_BUILD_UNITTESTS "If enabled, googletest framework will be downloaded
     and the provided unit tests will be included in the build." OFF)
@@ -168,11 +167,3 @@ install(
   COMPONENT
     Devel
 )
-
-rp_install_versions_file(${ConfigPackageLocation})
-
-foreach(p ${LIBNEST2D_PUBLIC_PACKAGES})
-    set(_pkgstr "${_pkgstr} ${p}")
-endforeach()
-message(STATUS "Installed Libnest2DConfig.cmake will require packages:${_pkgstr}")
-
