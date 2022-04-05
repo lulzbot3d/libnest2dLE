@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(libnest2d)
+project(Libnest2D)
 include(cmake_modules/conan.cmake)
 
 # Use C++17 Standard
