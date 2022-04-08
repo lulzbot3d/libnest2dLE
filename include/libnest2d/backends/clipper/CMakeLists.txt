@@ -6,7 +6,7 @@ target_link_libraries(clipperBackend INTERFACE clipper::clipper)
 
 # Clipper backend is not enough on its own, it still need some functions
 # from Boost geometry
-find_package(boost 1.58 REQUIRED)
+find_package(Boost 1.58 REQUIRED)
 
 if(TARGET boost::boost)
     target_link_libraries(clipperBackend INTERFACE boost::boost )
