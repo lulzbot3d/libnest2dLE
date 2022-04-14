@@ -1,6 +1,6 @@
 add_library(nloptOptimizer INTERFACE)
 
-require_package(NLopt 1.4 REQUIRED)
+find_package(NLopt 2.7 REQUIRED)
 
 target_link_libraries(nloptOptimizer INTERFACE NLopt::nlopt)
 

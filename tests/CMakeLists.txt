@@ -1,4 +1,4 @@
-require_package(Catch2 2.9.1 REQUIRED)
+find_package(catch2 2.9.1 REQUIRED)
 
 add_executable(tests_clipper_nlopt
     test.cpp
