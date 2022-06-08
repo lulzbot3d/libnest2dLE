@@ -1,11 +1,10 @@
-from pathlib import Path
+import os
 
 from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake
-
-from conans.errors import ConanInvalidConfiguration
-from conans.tools import Version
-from conan.tools.files import files
+from conans import tools
+from conan.tools.files import AutoPackager
+from conans.errors import ConanException
 
 required_conan_version = ">=1.46.2"
 
@@ -41,18 +40,37 @@ class Libnest2DConan(ConanFile):
         "revision": "auto"
     }
 
+    def layout(self):
+        self.folders.source = "."
+        try:
+            build_type = str(self.settings.build_type)
+        except ConanException:
+            raise ConanException("'build_type' setting not defined, it is necessary for cmake_layout()")
+        self.folders.build = f"cmake-build-{build_type.lower()}"
+        self.folders.generators = os.path.join(self.folders.build, "conan")
+
+        self.cpp.source.includedirs = ["include"]
+
+        self.cpp.build.libdirs = ["."]
+        self.cpp.build.bindirs = ["."]
+
+        if not self.options.header_only:
+            self.cpp.build.libs = [f"nest2d_{self.options.geometries}_{self.options.optimizer}"]
+
     def configure(self):
+        self.options["*"].shared = True
         if self.options.shared or self.settings.compiler == "Visual Studio":
             del self.options.fPIC
-        if self.options.geometries == "clipper":
-            self.options["clipper"].shared = self.options.shared
-            self.options["boost"].shared = self.options.shared
-        if self.options.optimizer == "nlopt":
-            self.options["nlopt"].shared = self.options.shared
+
+    def validate(self):
+        if self.settings.compiler.get_safe("cppstd"):
+            tools.check_min_cppstd(self, 17)
 
     def build_requirements(self):
+        self.tool_requires("ninja/[>=1.10.0]")
+        self.tool_requires("cmake/[>=3.23.0]")
         if self.options.tests:
-            self.build_requires("catch2/2.13.6", force_host_context=True)
+            self.tool_requires("catch2/2.13.6", force_host_context=True)
 
     def requirements(self):
         if self.options.geometries == "clipper":
@@ -85,3 +103,24 @@ class Libnest2DConan(ConanFile):
         tc.variables["LIBNEST2D_THREADING"] = self.options.threading
 
         tc.generate()
+
+    def build(self):
+        cmake = CMake(self)
+        cmake.configure()
+        cmake.build()
+        cmake.install()
+
+    def package(self):
+        packager = AutoPackager(self)
+        packager.run()
+
+    def package_info(self):
+        self.cpp_info.defines.append(f"LIBNEST2D_GEOMETRIES_{self.options.geometries}")
+        self.cpp_info.defines.append(f"LIBNEST2D_OPTIMIZERS_{self.options.optimizer}")
+        self.cpp_info.defines.append(f"LIBNEST2D_THREADING_{self.options.threading}")
+        if self.settings.os in ["Linux", "FreeBSD", "Macos"]:
+            self.cpp_info.system_libs.append("pthread")
+
+    def package_id(self):
+        if self.options.header_only:
+            self.info.header_only()
