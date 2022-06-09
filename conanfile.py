@@ -61,6 +61,8 @@ class Libnest2DConan(ConanFile):
         self.options["*"].shared = True
         if self.options.shared or self.settings.compiler == "Visual Studio":
             del self.options.fPIC
+        if self.options.geometries == "clipper":
+            self.options["boost"].header_only = True
 
     def validate(self):
         if self.settings.compiler.get_safe("cppstd"):
