@@ -87,7 +87,7 @@ class Libnest2DConan(ConanFile):
         cmake = CMakeDeps(self)
         cmake.generate()
 
-        tc = CMakeToolchain(self)
+        tc = CMakeToolchain(self, generator = "Ninja")
 
         # Don't use Visual Studio as the CMAKE_GENERATOR
         if self.settings.compiler == "Visual Studio":
