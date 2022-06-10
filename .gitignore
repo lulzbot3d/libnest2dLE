@@ -123,3 +123,7 @@ tmp/*
 test_package/build
 
 CMakeUserPresets.json
+conaninfo.txt
+conanbuildinfo.txt
+conan.lock
+graph_info.json
