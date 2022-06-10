@@ -54,8 +54,6 @@ class Libnest2DConan(ConanFile):
         self.cpp.build.libdirs = ["."]
         self.cpp.build.bindirs = ["."]
 
-        if not self.options.header_only:
-            self.cpp.build.libs = [f"nest2d_{self.options.geometries}_{self.options.optimizer}"]
 
     def configure(self):
         self.options["*"].shared = True
@@ -117,6 +115,8 @@ class Libnest2DConan(ConanFile):
         packager.run()
 
     def package_info(self):
+        if not self.options.header_only:
+            self.cpp_info.libs = tools.collect_libs(self)
         self.cpp_info.defines.append(f"LIBNEST2D_GEOMETRIES_{self.options.geometries}")
         self.cpp_info.defines.append(f"LIBNEST2D_OPTIMIZERS_{self.options.optimizer}")
         self.cpp_info.defines.append(f"LIBNEST2D_THREADING_{self.options.threading}")
