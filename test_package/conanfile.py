@@ -1,14 +1,20 @@
-from conans import ConanFile, CMake
+from conans import tools
+from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake
 
 
 class LibNest2DTestConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
 
+    def build_requirements(self):
+        self.tool_requires("ninja/[>=1.10.0]")
+        self.tool_requires("cmake/[>=3.23.0]")
+
     def generate(self):
         cmake = CMakeDeps(self)
         cmake.generate()
-        tc = CMakeToolchain(self)
+
+        tc = CMakeToolchain(self, generator = "Ninja")
         if self.settings.compiler == "Visual Studio":
             tc.blocks["generic_system"].values["generator_platform"] = None
             tc.blocks["generic_system"].values["toolset"] = None
@@ -20,4 +26,6 @@ class LibNest2DTestConan(ConanFile):
         cmake.build()
 
     def test(self):
-        pass # only interested in compiling and linking
+        if not tools.cross_building(self):
+            ext = ".exe" if self.settings.os == "Windows" else ""
+            self.run(f"test{ext}", env = "conanrun")
