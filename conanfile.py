@@ -40,6 +40,11 @@ class Libnest2DConan(ConanFile):
         "revision": "auto"
     }
 
+    @property
+    def _conan_data_version(self):
+        version = tools.Version(self.version)
+        return f"{version.major}.{version.minor}.{version.patch}-{version.prerelease}"
+
     def layout(self):
         self.folders.source = "."
         try:
@@ -73,13 +78,10 @@ class Libnest2DConan(ConanFile):
             self.tool_requires("catch2/2.13.6", force_host_context=True)
 
     def requirements(self):
-        if self.options.geometries == "clipper":
-            self.requires("clipper/6.4.2")
-            self.requires("boost/1.78.0")
-        elif self.options.geometries == "eigen":
-            self.requires("eigen/3.3.7")
-        if self.options.optimizer == "nlopt":
-            self.requires("nlopt/2.7.0")
+        for req in self.conan_data[f"requirements_{self.options.geometries}"][self._conan_data_version]:
+            self.requires(req)
+        for req in self.conan_data[f"requirements_{self.options.optimizer}"][self._conan_data_version]:
+            self.requires(req)
 
     def generate(self):
         cmake = CMakeDeps(self)
