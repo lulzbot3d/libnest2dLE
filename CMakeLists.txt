@@ -112,14 +112,6 @@ if(LIBNEST2D_BUILD_UNITTESTS)
     add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
 endif()
 
-include(CMakePackageConfigHelpers)
-
-write_basic_package_version_file(
-    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"     
-    VERSION 1.0
-    COMPATIBILITY AnyNewerVersion
-)
-
 export(EXPORT ${PROJECT_NAME}Targets 
        FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake" 
        NAMESPACE ${PROJECT_NAME}::)
