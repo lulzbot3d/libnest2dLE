@@ -72,8 +72,6 @@ class Libnest2DConan(ConanFile):
             tools.check_min_cppstd(self, 17)
 
     def build_requirements(self):
-        self.tool_requires("ninja/[>=1.10.0]")
-        self.tool_requires("cmake/[>=3.23.0]")
         if self.options.tests:
             self.tool_requires("catch2/2.13.6", force_host_context=True)
 
