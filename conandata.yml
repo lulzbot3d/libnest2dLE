@@ -1,17 +1,40 @@
 requirements_clipper:
+    "None":
+        - "boost/1.78.0"
+        - "clipper/6.4.2"
+    "5.1.0":
+        - "boost/1.78.0"
+        - "clipper/6.4.2"
     "5.1.0-beta":
-    - "boost/1.78.0"
-    - "clipper/6.4.2"
+        - "boost/1.78.0"
+        - "clipper/6.4.2"
     "5.1.0-cura_9365":
-    - "boost/1.78.0"
-    - "clipper/6.4.2"
+        - "boost/1.78.0"
+        - "clipper/6.4.2"
 requirements_eigen:
+    "None":
+        - "eigen/3.3.7"
+    "5.1.0":
+        - "eigen/3.3.7"
     "5.1.0-beta":
-    - "eigen/3.3.7"
+        - "eigen/3.3.7"
     "5.1.0-cura_9365":
-    - "eigen/3.3.7"
+        - "eigen/3.3.7"
 requirements_nlopt:
+    "None":
+        - "nlopt/2.7.0"
+    "5.1.0":
+        - "nlopt/2.7.0"
     "5.1.0-beta":
-    - "nlopt/2.7.0"
+        - "nlopt/2.7.0"
     "5.1.0-cura_9365":
-    - "nlopt/2.7.0"
+        - "nlopt/2.7.0"
+requirements_testing:
+    "None":
+        - "catch2/[>=2.13.6]"
+    "5.1.0":
+        - "catch2/[>=2.13.6]"
+    "5.1.0-beta":
+        - "catch2/[>=2.13.6]"
+    "5.1.0-cura_9365":
+        - "catch2/[>=2.13.6]"

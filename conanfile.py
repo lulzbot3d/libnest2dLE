@@ -15,6 +15,10 @@ class Libnest2DConan(ConanFile):
     topics = ("conan", "cura", "prusaslicer", "nesting", "c++", "bin packaging")
     settings = "os", "compiler", "build_type", "arch"
     build_policy = "missing"
+
+    python_requires = "umbase/0.1@ultimaker/testing"
+    python_requires_extend = "umbase.UMBaseConanfile"
+
     options = {
         "shared": [True, False],
         "fPIC": [True, False],
@@ -39,11 +43,6 @@ class Libnest2DConan(ConanFile):
         "url": "auto",
         "revision": "auto"
     }
-
-    @property
-    def _conan_data_version(self):
-        version = tools.Version(self.version)
-        return f"{version.major}.{version.minor}.{version.patch}-{version.prerelease}"
 
     def layout(self):
         self.folders.source = "."
@@ -73,13 +72,13 @@ class Libnest2DConan(ConanFile):
 
     def build_requirements(self):
         if self.options.tests:
-            self.tool_requires("catch2/2.13.6", force_host_context=True)
+            for req in self._um_data(self.version)["requirements_testing"]:
+                self.tool_requires(req, force_host_context=True)
 
     def requirements(self):
-        for req in self.conan_data[f"requirements_{self.options.geometries}"][self._conan_data_version]:
-            self.requires(req)
-        for req in self.conan_data[f"requirements_{self.options.optimizer}"][self._conan_data_version]:
-            self.requires(req)
+        for req_option in [f"requirements_{self.options.geometries}", f"requirements_{self.options.optimizer}"]:
+            for req in self._um_data(self.version)[req_option]:
+                self.requires(req)
 
     def generate(self):
         cmake = CMakeDeps(self)
