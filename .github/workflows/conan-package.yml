@@ -30,8 +30,9 @@ on:
             - 'GitVersion.yml'
         branches:
             - main
-            - '[5-9].[0-9]+*'
             - 'CURA-*'
+        tags:
+            - '[1-9]+.[0-9]+.[0-9]+'
 
     pull_request:
         paths:
@@ -47,8 +48,6 @@ on:
             - 'GitVersion.yml'
         branches:
             - main
-            - '[5-9].[0-9]+*'
-            - 'CURA-*'
 
 jobs:
     conan-recipe-version:
