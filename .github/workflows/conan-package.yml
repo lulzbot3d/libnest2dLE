@@ -30,6 +30,7 @@ on:
             - 'GitVersion.yml'
         branches:
             - main
+            - '[5-9].[0-9]+*'
             - 'CURA-*'
 
     pull_request:
@@ -45,7 +46,9 @@ on:
             - '.github/workflows/conan-package.yml'
             - 'GitVersion.yml'
         branches:
-        - main
+            - main
+            - '[5-9].[0-9]+*'
+            - 'CURA-*'
 
 jobs:
     conan-recipe-version:
