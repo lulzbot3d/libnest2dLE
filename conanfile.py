@@ -16,7 +16,7 @@ class Libnest2DConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     build_policy = "missing"
 
-    python_requires = "umbase/0.1@ultimaker/testing"
+    python_requires = "umbase/[>=0.1.1]@ultimaker/testing"
     python_requires_extend = "umbase.UMBaseConanfile"
 
     options = {
