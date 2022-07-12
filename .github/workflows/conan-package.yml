@@ -34,6 +34,7 @@ on:
             - 'CMakeLists.txt'
             - 'requirements.txt'
             - '.github/workflows/conan-package.yml'
+            - '.github/workflows/requirements*'
             - 'GitVersion.yml'
         branches:
             - main
