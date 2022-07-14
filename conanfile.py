@@ -72,12 +72,12 @@ class Libnest2DConan(ConanFile):
 
     def build_requirements(self):
         if self.options.tests:
-            for req in self._um_data(self.version)["requirements_testing"]:
+            for req in self._um_data(self.version, self.channel)["requirements_testing"]:
                 self.tool_requires(req, force_host_context=True)
 
     def requirements(self):
         for req_option in [f"requirements_{self.options.geometries}", f"requirements_{self.options.optimizer}"]:
-            for req in self._um_data(self.version)[req_option]:
+            for req in self._um_data(self.version, self.channel)[req_option]:
                 self.requires(req)
 
     def generate(self):
