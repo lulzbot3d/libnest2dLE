@@ -27,7 +27,7 @@
     requirements_nlopt:
         - "nlopt/2.7.0"
     requirements_testing:
-        "catch2/[>=2.13.6]"
+        - "catch2/[>=2.13.6]"
 "5.1.0-alpha":
     requirements_clipper:
         - "boost/1.78.0"
