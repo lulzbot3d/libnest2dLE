@@ -16,7 +16,7 @@ class Libnest2DConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     build_policy = "missing"
 
-    python_requires = "umbase/0.1.4@ultimaker/testing"
+    python_requires = "umbase/0.1.5@ultimaker/testing"
     python_requires_extend = "umbase.UMBaseConanfile"
 
     options = {
@@ -72,14 +72,12 @@ class Libnest2DConan(ConanFile):
 
     def build_requirements(self):
         if self.options.tests:
-            channel = "" if not self.channel else self.channel
-            for req in self._um_data(self.version, channel)["requirements_testing"]:
+            for req in self._um_data()["requirements_testing"]:
                 self.tool_requires(req, force_host_context=True)
 
     def requirements(self):
         for req_option in [f"requirements_{self.options.geometries}", f"requirements_{self.options.optimizer}"]:
-            channel = "" if not self.channel else self.channel
-            for req in self._um_data(self.version, channel)[req_option]:
+            for req in self._um_data()[req_option]:
                 self.requires(req)
 
     def generate(self):
