@@ -1,7 +1,7 @@
 import os
 
 from conan import ConanFile
-from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake
+from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake, cmake_layout
 from conans import tools
 from conan.tools.files import AutoPackager
 from conans.errors import ConanException
@@ -45,19 +45,7 @@ class Libnest2DConan(ConanFile):
     }
 
     def layout(self):
-        self.folders.source = "."
-        try:
-            build_type = str(self.settings.build_type)
-        except ConanException:
-            raise ConanException("'build_type' setting not defined, it is necessary for cmake_layout()")
-        self.folders.build = f"cmake-build-{build_type.lower()}"
-        self.folders.generators = os.path.join(self.folders.build, "conan")
-
-        self.cpp.source.includedirs = ["include"]
-
-        self.cpp.build.libdirs = ["."]
-        self.cpp.build.bindirs = ["."]
-
+        cmake_layout(self)
 
     def configure(self):
         self.options["*"].shared = True
