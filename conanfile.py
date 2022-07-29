@@ -15,7 +15,6 @@ class Libnest2DConan(ConanFile):
     topics = ("conan", "cura", "prusaslicer", "nesting", "c++", "bin packaging")
     settings = "os", "compiler", "build_type", "arch"
     build_policy = "missing"
-    generators = "CMakeDeps"
 
     python_requires = "umbase/0.1.5@ultimaker/testing"
     python_requires_extend = "umbase.UMBaseConanfile"
@@ -70,6 +69,9 @@ class Libnest2DConan(ConanFile):
                 self.requires(req)
 
     def generate(self):
+        cmake = CMakeDeps(self)
+        cmake.generate()
+
         tc = CMakeToolchain(self, generator = "Ninja")
 
         # Don't use Visual Studio as the CMAKE_GENERATOR
