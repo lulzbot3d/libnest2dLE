@@ -24,6 +24,7 @@ class Libnest2DConan(ConanFile):
         "fPIC": [True, False],
         "tests": [True, False],
         "header_only": [True, False],
+        "enable_testing": [True, False],
         "geometries": ["clipper", "boost", "eigen"],
         "optimizer": ["nlopt", "optimlib"],
         "threading": ["std", "tbb", "omp", "none"]
@@ -33,6 +34,7 @@ class Libnest2DConan(ConanFile):
         "tests": False,
         "fPIC": True,
         "header_only": False,
+        "enable_testing": False,
         "geometries": "clipper",
         "optimizer": "nlopt",
         "threading": "std"
@@ -59,9 +61,9 @@ class Libnest2DConan(ConanFile):
             tools.check_min_cppstd(self, 17)
 
     def build_requirements(self):
-        if self.options.tests:
+        if self.options.enable_testing:
             for req in self._um_data()["requirements_testing"]:
-                self.tool_requires(req, force_host_context=True)
+                self.tool_requires(req)
 
     def requirements(self):
         for req_option in [f"requirements_{self.options.geometries}", f"requirements_{self.options.optimizer}"]:
