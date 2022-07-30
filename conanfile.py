@@ -48,6 +48,7 @@ class Libnest2DConan(ConanFile):
 
     def layout(self):
         cmake_layout(self)
+        self.folders.generators = os.path.join(self.folders.build, "conan")
 
     def configure(self):
         self.options["*"].shared = True
