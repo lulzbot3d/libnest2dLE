@@ -59,7 +59,7 @@ jobs:
     conan-recipe-version:
         uses: ultimaker/cura/.github/workflows/conan-recipe-version.yml@main
         with:
-            project_name: libnest2d
+            project_name: nest2d
 
     conan-package-export:
         needs: [ conan-recipe-version ]

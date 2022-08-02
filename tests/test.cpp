@@ -1,5 +1,5 @@
 #define CATCH_CONFIG_MAIN
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <fstream>
 
@@ -64,11 +64,11 @@ TEST_CASE("Angles", "[Geometry]")
     Radians rad(deg);
     Degrees deg2(rad);
 
-    REQUIRE(Approx(rad) == Pi);
-    REQUIRE(Approx(deg) == 180);
-    REQUIRE(Approx(deg2) == 180);
-    REQUIRE(Approx(rad) == Radians(deg));
-    REQUIRE(Approx(Degrees(rad)) == deg);
+    REQUIRE(Catch::Approx(rad) == Pi);
+    REQUIRE(Catch::Approx(deg) == 180);
+    REQUIRE(Catch::Approx(deg2) == 180);
+    REQUIRE(Catch::Approx(rad) == Radians(deg));
+    REQUIRE(Catch::Approx(Degrees(rad)) == deg);
 
     REQUIRE(rad == deg);
 
@@ -94,19 +94,19 @@ TEST_CASE("Angles", "[Geometry]")
 
     seg = {{0, 0}, {1, 0}};
 
-    REQUIRE(Degrees(seg.angleToXaxis()) == Approx(0.));
+    REQUIRE(Degrees(seg.angleToXaxis()) == Catch::Approx(0.));
 
     seg = {{0, 0}, {0, 1}};
 
-    REQUIRE(Degrees(seg.angleToXaxis()) == Approx(90.));
+    REQUIRE(Degrees(seg.angleToXaxis()) == Catch::Approx(90.));
 
     seg = {{0, 0}, {-1, 0}};
 
-    REQUIRE(Degrees(seg.angleToXaxis()) == Approx(180.));
+    REQUIRE(Degrees(seg.angleToXaxis()) == Catch::Approx(180.));
 
     seg = {{0, 0}, {0, -1}};
 
-    REQUIRE(Degrees(seg.angleToXaxis()) == Approx(270.));
+    REQUIRE(Degrees(seg.angleToXaxis()) == Catch::Approx(270.));
 }
 
 // Simple TEST_CASE, does not use gmock
@@ -142,14 +142,14 @@ TEST_CASE("boundingCircle", "[Geometry]") {
 
     REQUIRE(c.center().X == 0);
     REQUIRE(c.center().Y == 0);
-    REQUIRE(c.radius() == Approx(10));
+    REQUIRE(c.radius() == Catch::Approx(10));
 
     shapelike::translate(p, PointImpl{10, 10});
     c = boundingCircle(p);
 
     REQUIRE(c.center().X == 10);
     REQUIRE(c.center().Y == 10);
-    REQUIRE(c.radius() == Approx(10));
+    REQUIRE(c.radius() == Catch::Approx(10));
 
     auto parts = prusaParts();
 
@@ -178,19 +178,19 @@ TEST_CASE("Distance", "[Geometry]") {
     Point p2 = {10, 0};
     Point p3 = {10, 10};
 
-    REQUIRE(pointlike::distance(p1, p2) == Approx(10));
-    REQUIRE(pointlike::distance(p1, p3) == Approx(sqrt(200)));
+    REQUIRE(pointlike::distance(p1, p2) == Catch::Approx(10));
+    REQUIRE(pointlike::distance(p1, p3) == Catch::Approx(sqrt(200)));
 
     Segment seg(p1, p3);
 
-    //    REQUIRE(pointlike::distance(p2, seg) == Approx(7.0710678118654755));
+    //    REQUIRE(pointlike::distance(p2, seg) == Catch::Approx(7.0710678118654755));
 
     auto result = pointlike::horizontalDistance(p2, seg);
 
     auto check = [](TCompute<Coord> val, TCompute<Coord> expected) {
         if(std::is_floating_point<TCompute<Coord>>::value)
             REQUIRE(static_cast<double>(val) ==
-                    Approx(static_cast<double>(expected)));
+                    Catch::Approx(static_cast<double>(expected)));
         else
             REQUIRE(val == expected);
     };
@@ -226,11 +226,11 @@ TEST_CASE("Area", "[Geometry]") {
 
     RectangleItem rect(10, 10);
     
-    REQUIRE(rect.area() == Approx(100));
+    REQUIRE(rect.area() == Catch::Approx(100));
 
     RectangleItem rect2 = {100, 100};
     
-    REQUIRE(rect2.area() == Approx(10000));
+    REQUIRE(rect2.area() == Catch::Approx(10000));
 
     Item item = {
         {61, 97},
@@ -1014,7 +1014,7 @@ TEST_CASE("mergePileWithPolygon", "[Geometry]") {
 
     RectangleItem ref(45, 15);
     
-    REQUIRE(shapelike::area(result.front()) == Approx(ref.area()));
+    REQUIRE(shapelike::area(result.front()) == Catch::Approx(ref.area()));
 }
 
 namespace {
