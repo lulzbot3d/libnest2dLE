@@ -120,7 +120,6 @@ jobs:
                 working-directory: build/generators/
 
             -   name: Build Unit Test CuraEngine
-                id: run-test
                 run: |
                     cmake --preset Release
                     cmake --build --preset Release
