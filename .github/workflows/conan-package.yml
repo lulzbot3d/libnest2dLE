@@ -41,7 +41,7 @@ on:
             - 'include/**'
             - 'test_package/**'
             - 'tests/**'
-            - 'cmake_modules/**'
+            - 'cmake/**'
             - 'conanfile.py'
             - 'conandata.yml'
             - 'CMakeLists.txt'
@@ -50,10 +50,13 @@ on:
             - '.github/workflows/requirements*'
         branches:
             - main
+            - master
             - 'CURA-*'
-            - '[0-9]+.[0-9]+'
+            - '[0-9].[0-9]'
+            - '[0-9].[0-9][0-9]'
         tags:
-            - '[0-9]+.[0-9]+.[0-9]+'
+            - '[0-9].[0-9].[0-9]'
+            - '[0-9].[0-9][0-9].[0-9]'
 
 jobs:
     conan-recipe-version:
