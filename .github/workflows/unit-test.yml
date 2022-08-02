@@ -121,8 +121,8 @@ jobs:
 
             -   name: Build Unit Test CuraEngine
                 run: |
-                    cmake --preset Release
-                    cmake --build --preset Release
+                    cmake --preset release
+                    cmake --build --preset release
 
             -   name: Run Unit Test CuraEngine
                 id: run-test
