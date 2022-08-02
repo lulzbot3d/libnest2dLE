@@ -119,13 +119,16 @@ jobs:
                     . ./activate_github_actions_buildenv.sh
                 working-directory: build/generators/
 
-            -   name: Run Unit Test CuraEngine
+            -   name: Build Unit Test CuraEngine
                 id: run-test
                 run: |
-                    cmake --preset Release -S .. -B .
-                    cmake --preset Release --build .
-                    ctest --output-junit engine_test.xml
-                working-directory: cmake-build-release
+                    cmake --preset Release
+                    cmake --build --preset Release
+
+            -   name: Run Unit Test CuraEngine
+                id: run-test
+                run: ctest --output-junit engine_test.xml
+                working-directory: cmake-build-release/
 
             -   name: Publish Unit Test Results
                 id: test-results
