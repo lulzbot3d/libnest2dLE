@@ -3,6 +3,8 @@
 <p align="center">
     <a href="https://github.com/Ultimaker/libnest2d/actions/workflows/conan-package.yml" alt="Conan Package">
         <img src="https://github.com/Ultimaker/libnest2d/actions/workflows/conan-package.yml/badge.svg" /></a>
+    <a href="https://github.com/Ultimaker/libnest2d/actions/workflows/unit-test.yml" alt="Unit Tests">
+        <img src="https://github.com/Ultimaker/libnest2d/actions/workflows/unit-test.yml/badge.svg" /></a>
     <a href="https://github.com/Ultimaker/libnest2d/issues" alt="Open Issues">
         <img src="https://img.shields.io/github/issues/ultimaker/libnest2d" /></a>
     <a href="https://github.com/Ultimaker/libnest2d/issues?q=is%3Aissue+is%3Aclosed" alt="Closed Issues">
