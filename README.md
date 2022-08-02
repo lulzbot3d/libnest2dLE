@@ -87,7 +87,7 @@ cmake --build .
 To create a new libnest2d Conan package such that it can be used in Cura, run the following command:
 
 ```shell
-conan create . libnest2d/<version>@<username>/<channel> --build=missing --update
+conan create . nest2d/<version>@<username>/<channel> --build=missing --update
 ```
 
 This package will be stored in the local Conan cache (`~/.conan/data` or `C:\Users\username\.conan\data` ) and can be used in downstream
