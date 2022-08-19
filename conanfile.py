@@ -5,7 +5,7 @@ from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake, cmake_layout
 from conans import tools
 from conan.tools.files import AutoPackager, files
 
-required_conan_version = ">=1.46.2"
+required_conan_version = ">=1.48.0"
 
 
 class Nest2DConan(ConanFile):
