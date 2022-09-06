@@ -88,12 +88,6 @@ class Nest2DConan(ConanFile):
         deps.generate()
 
         tc = CMakeToolchain(self)
-
-        # Don't use Visual Studio as the CMAKE_GENERATOR
-        if self.settings.compiler == "Visual Studio":
-            tc.blocks["generic_system"].values["generator_platform"] = None
-            tc.blocks["generic_system"].values["toolset"] = None
-
         tc.variables["HEADER_ONLY"] = self.options.header_only
         if not self.options.header_only:
             tc.variables["BUILD_SHARED_LIBS"] = self.options.shared
