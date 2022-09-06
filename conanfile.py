@@ -2,10 +2,10 @@ import os
 
 from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake, cmake_layout
-from conans import tools
-from conan.tools.files import AutoPackager, files
+from conan.tools.files import AutoPackager, files, collect_libs
+from conan.tools.build import check_min_cppstd
 
-required_conan_version = ">=1.48.0"
+required_conan_version = ">=1.50.0"
 
 
 class Nest2DConan(ConanFile):
@@ -15,7 +15,7 @@ class Nest2DConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     build_policy = "missing"
 
-    python_requires = "umbase/0.1.5@ultimaker/testing"
+    python_requires = "umbase/[>=0.1.7]@ultimaker/stable"
     python_requires_extend = "umbase.UMBaseConanfile"
 
     options = {
@@ -45,6 +45,10 @@ class Nest2DConan(ConanFile):
         "revision": "auto"
     }
 
+    def set_version(self):
+        if self.version is None:
+            self.version = self._umdefault_version()
+
     def layout(self):
         cmake_layout(self)
         self.cpp.package.libs = ["nest2d"]
@@ -68,7 +72,7 @@ class Nest2DConan(ConanFile):
 
     def validate(self):
         if self.settings.compiler.get_safe("cppstd"):
-            tools.check_min_cppstd(self, 17)
+            check_min_cppstd(self, 17)
 
     def build_requirements(self):
         if self.options.enable_testing:
@@ -76,6 +80,7 @@ class Nest2DConan(ConanFile):
                 self.tool_requires(req)
 
     def requirements(self):
+        self.requires("umbase/[>=0.1.7]@ultimaker/stable")
         for req_option in [f"requirements_{self.options.geometries}", f"requirements_{self.options.optimizer}", f"requirements_{self.options.threading}"]:
             for req in self._um_data()[req_option]:
                 self.requires(req)
@@ -118,7 +123,7 @@ class Nest2DConan(ConanFile):
 
     def package_info(self):
         if not self.options.header_only:
-            self.cpp_info.libs = tools.collect_libs(self)
+            self.cpp_info.libs = collect_libs(self)
         self.cpp_info.defines.append(f"LIBNEST2D_GEOMETRIES_{self.options.geometries}")
         self.cpp_info.defines.append(f"LIBNEST2D_OPTIMIZERS_{self.options.optimizer}")
         self.cpp_info.defines.append(f"LIBNEST2D_THREADING_{self.options.threading}")
@@ -127,4 +132,4 @@ class Nest2DConan(ConanFile):
 
     def package_id(self):
         if self.options.header_only:
-            self.info.header_only()
+            self.info.clear()
