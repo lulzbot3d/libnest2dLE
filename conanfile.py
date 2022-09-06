@@ -80,7 +80,7 @@ class Nest2DConan(ConanFile):
                 self.tool_requires(req)
 
     def requirements(self):
-        self.requires("umbase/[>=0.1.7]@ultimaker/stable")
+        self.requires("standardprojectsettings/[>=0.1.0]@ultimaker/stable")
         for req_option in [f"requirements_{self.options.geometries}", f"requirements_{self.options.optimizer}", f"requirements_{self.options.threading}"]:
             for req in self._um_data()[req_option]:
                 self.requires(req)
