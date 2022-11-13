@@ -147,7 +147,7 @@ jobs:
 
     notify-create:
         if: ${{ always() && ((github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'master' || needs.conan-recipe-version.outputs.is_release_branch == 'true')) || (github.event_name == 'workflow_dispatch' && inputs.create_binaries_linux)) }}
-        needs: [ conan-recipe-version, conan-package-create-macos, conan-package-create-windows, conan-package-create-linux ]
+        needs: [ conan-recipe-version, conan-package-create-macos, conan-package-create-windows, conan-package-create-linux, conan-package-create-linux-modern ]
 
         uses: ultimaker/cura/.github/workflows/notify.yml@main
         with:
