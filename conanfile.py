@@ -1,11 +1,17 @@
 import os
 
-from conan import ConanFile
-from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake, cmake_layout
-from conan.tools.files import AutoPackager, files, collect_libs
-from conan.tools.build import check_min_cppstd
+from os import path
 
-required_conan_version = ">=1.50.0"
+from conan import ConanFile
+from conan.errors import ConanInvalidConfiguration
+from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake, cmake_layout
+from conan.tools.files import AutoPackager, files, collect_libs, copy
+from conan.tools.build import check_min_cppstd
+from conan.tools.microsoft import check_min_vs, is_msvc
+from conan.tools.scm import Version
+
+
+required_conan_version = ">=1.56.0"
 
 
 class Nest2DConan(ConanFile):
@@ -14,9 +20,6 @@ class Nest2DConan(ConanFile):
     topics = ("conan", "cura", "prusaslicer", "nesting", "c++", "bin packaging")
     settings = "os", "compiler", "build_type", "arch"
     build_policy = "missing"
-
-    python_requires = "umbase/[>=0.1.7]@ultimaker/stable"
-    python_requires_extend = "umbase.UMBaseConanfile"
 
     options = {
         "shared": [True, False],
@@ -38,29 +41,74 @@ class Nest2DConan(ConanFile):
         "optimizer": "nlopt",
         "threading": "std"
     }
-    scm = {
-        "type": "git",
-        "subfolder": ".",
-        "url": "auto",
-        "revision": "auto"
-    }
 
     def set_version(self):
         if self.version is None:
-            self.version = self._umdefault_version()
+            self.version = "5.3.0-alpha"
+
+    @property
+    def _min_cppstd(self):
+        return 17
+
+    @property
+    def _compilers_minimum_version(self):
+        return {
+            "gcc": "9",
+            "clang": "9",
+            "apple-clang": "9",
+            "msvc": "192",
+            "visual_studio": "14",
+        }
+
+    def export_sources(self):
+        copy(self, "CMakeLists.txt", self.recipe_folder, self.export_sources_folder)
+        copy(self, "*", path.join(self.recipe_folder, "src"), path.join(self.export_sources_folder, "src"))
+        copy(self, "*", path.join(self.recipe_folder, "include"), path.join(self.export_sources_folder, "include"))
+        copy(self, "*", path.join(self.recipe_folder, "tests"), path.join(self.export_sources_folder, "tests"))
 
     def layout(self):
         cmake_layout(self)
         self.cpp.package.libs = ["nest2d"]
 
+    def requirements(self):
+        if self.options.geometries == "clipper":
+            self.requires("boost/1.82.0", transitive_headers=True)
+            self.requires("clipper/6.4.2", transitive_headers=True)
+        if self.options.geometries == "boost":
+            self.requires("boost/1.82.0", transitive_headers=True)
+        if self.options.optimizer == "nlopt":
+            self.requires("nlopt/2.7.0", transitive_headers=True)
+        if self.options.optimizer == "optimlib":
+            self.requires("armadillo/10.7.3", transitive_headers=True)
+        if self.options.threading == "tbb":
+            self.requires("tbb/2020.3", transitive_headers=True)
+        if self.options.threading == "omp":
+            self.requires("llvm-openmp/12.0.1", transitive_headers=True)
+
+    def validate(self):
+        if self.settings.compiler.cppstd:
+            check_min_cppstd(self, self._min_cppstd)
+        check_min_vs(self, 192)  # TODO: remove in Conan 2.0
+        if not is_msvc(self):
+            minimum_version = self._compilers_minimum_version.get(str(self.settings.compiler), False)
+            if minimum_version and Version(self.settings.compiler.version) < minimum_version:
+                raise ConanInvalidConfiguration(
+                    f"{self.ref} requires C++{self._min_cppstd}, which your compiler does not support."
+                )
+
+    def build_requirements(self):
+        self.test_requires("standardprojectsettings/[>=0.1.0]@ultimaker/stable")
+        if self.options.enable_testing:
+            self.test_requires("catch2/[>=2.13.6]")
+
+
     def config_options(self):
-        if self.options.header_only:
-            del self.options.shared
-        else:
-            if self.options.shared or self.settings.compiler == "Visual Studio":
-                del self.options.fPIC
+        if self.settings.os == "Windows":
+            del self.options.fPIC
 
     def configure(self):
+        if self.options.shared:
+            self.options.rm_safe("fPIC")
         self.options["boost"].header_only = True
         if self.options.geometries == "clipper":
             self.options["clipper"].shared = True if self.options.header_only else self.options.shared
@@ -69,21 +117,6 @@ class Nest2DConan(ConanFile):
             self.options["tbb"].shared = True if self.options.header_only else self.options.shared
         if self.options.threading == "omp":
             self.options["llvm-openmp"].shared =True if self.options.header_only else self.options.shared
-
-    def validate(self):
-        if self.settings.compiler.get_safe("cppstd"):
-            check_min_cppstd(self, 17)
-
-    def build_requirements(self):
-        if self.options.enable_testing:
-            for req in self._um_data()["requirements_testing"]:
-                self.tool_requires(req)
-
-    def requirements(self):
-        self.requires("standardprojectsettings/[>=0.1.0]@ultimaker/stable")
-        for req_option in [f"requirements_{self.options.geometries}", f"requirements_{self.options.optimizer}", f"requirements_{self.options.threading}"]:
-            for req in self._um_data()[req_option]:
-                self.requires(req)
 
     def generate(self):
         deps = CMakeDeps(self)
