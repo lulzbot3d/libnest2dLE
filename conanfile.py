@@ -26,6 +26,7 @@ class Nest2DConan(ConanFile):
         "fPIC": [True, False],
         "tests": [True, False],
         "header_only": [True, False],
+        "enable_testing": [True, False],
         "geometries": ["clipper", "boost"],
         "optimizer": ["nlopt", "optimlib"],
         "threading": ["std", "tbb", "omp", "none"]
@@ -35,6 +36,7 @@ class Nest2DConan(ConanFile):
         "tests": False,
         "fPIC": True,
         "header_only": False,
+        "enable_testing": False,
         "geometries": "clipper",
         "optimizer": "nlopt",
         "threading": "std"
@@ -97,7 +99,7 @@ class Nest2DConan(ConanFile):
 
     def build_requirements(self):
         self.test_requires("standardprojectsettings/[>=0.1.0]@ultimaker/stable")
-        if not self.conf.get("tools.build:skip_test", False, check_type = bool):
+        if self.options.enable_testing:
             self.test_requires("catch2/[>=2.13.6]")
 
 
@@ -119,7 +121,7 @@ class Nest2DConan(ConanFile):
 
     def generate(self):
         deps = CMakeDeps(self)
-        if not self.conf.get("tools.build:skip_test", False, check_type = bool):
+        if self.options.enable_testing:
             deps.build_context_activated = ["catch2"]
             deps.build_context_build_modules = ["catch2"]
         deps.generate()
