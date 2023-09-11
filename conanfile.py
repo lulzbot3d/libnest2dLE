@@ -63,6 +63,7 @@ class Nest2DConan(ConanFile):
         copy(self, "*", path.join(self.recipe_folder, "src"), path.join(self.export_sources_folder, "src"))
         copy(self, "*", path.join(self.recipe_folder, "include"), path.join(self.export_sources_folder, "include"))
         copy(self, "*", path.join(self.recipe_folder, "tests"), path.join(self.export_sources_folder, "tests"))
+        copy(self, "*", path.join(self.recipe_folder, "tools"), path.join(self.export_sources_folder, "tools"))
 
     def layout(self):
         cmake_layout(self)
