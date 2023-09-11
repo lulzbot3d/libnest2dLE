@@ -65,7 +65,7 @@ jobs:
       project_name: nest2d
 
   testing:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [ conan-recipe-version ]
 
     steps:
