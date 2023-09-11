@@ -130,7 +130,7 @@ class Nest2DConan(ConanFile):
         tc.variables["HEADER_ONLY"] = self.options.header_only
         if not self.options.header_only:
             tc.variables["BUILD_SHARED_LIBS"] = self.options.shared
-        tc.variables["ENABLE_TESTING"] = not self.conf.get("tools.build:skip_test", False, check_type = bool)
+        tc.variables["ENABLE_TESTING"] = self.options.enable_testing
         tc.variables["GEOMETRIES"] = self.options.geometries
         tc.variables["OPTIMIZER"] = self.options.optimizer
         tc.variables["THREADING"] = self.options.threading
