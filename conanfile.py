@@ -11,7 +11,7 @@ from conan.tools.microsoft import check_min_vs, is_msvc
 from conan.tools.scm import Version
 
 
-required_conan_version = ">=1.56.0"
+required_conan_version = ">=1.58.0"
 
 
 class Nest2DConan(ConanFile):
@@ -26,7 +26,6 @@ class Nest2DConan(ConanFile):
         "fPIC": [True, False],
         "tests": [True, False],
         "header_only": [True, False],
-        "enable_testing": [True, False],
         "geometries": ["clipper", "boost"],
         "optimizer": ["nlopt", "optimlib"],
         "threading": ["std", "tbb", "omp", "none"]
@@ -36,7 +35,6 @@ class Nest2DConan(ConanFile):
         "tests": False,
         "fPIC": True,
         "header_only": False,
-        "enable_testing": False,
         "geometries": "clipper",
         "optimizer": "nlopt",
         "threading": "std"
@@ -44,7 +42,7 @@ class Nest2DConan(ConanFile):
 
     def set_version(self):
         if self.version is None:
-            self.version = "5.3.0-alpha"
+            self.version = "5.4.0-alpha"
 
     @property
     def _min_cppstd(self):
@@ -98,7 +96,7 @@ class Nest2DConan(ConanFile):
 
     def build_requirements(self):
         self.test_requires("standardprojectsettings/[>=0.1.0]@ultimaker/stable")
-        if self.options.enable_testing:
+        if not self.conf.get("tools.build:skip_test", False, check_type = bool):
             self.test_requires("catch2/[>=2.13.6]")
 
 
@@ -120,7 +118,7 @@ class Nest2DConan(ConanFile):
 
     def generate(self):
         deps = CMakeDeps(self)
-        if self.options.enable_testing:
+        if not self.conf.get("tools.build:skip_test", False, check_type = bool):
             deps.build_context_activated = ["catch2"]
             deps.build_context_build_modules = ["catch2"]
         deps.generate()
@@ -129,7 +127,7 @@ class Nest2DConan(ConanFile):
         tc.variables["HEADER_ONLY"] = self.options.header_only
         if not self.options.header_only:
             tc.variables["BUILD_SHARED_LIBS"] = self.options.shared
-        tc.variables["ENABLE_TESTING"] = self.options.enable_testing
+        tc.variables["ENABLE_TESTING"] = not self.conf.get("tools.build:skip_test", False, check_type = bool)
         tc.variables["GEOMETRIES"] = self.options.geometries
         tc.variables["OPTIMIZER"] = self.options.optimizer
         tc.variables["THREADING"] = self.options.threading
