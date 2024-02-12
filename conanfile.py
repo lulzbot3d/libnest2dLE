@@ -99,7 +99,7 @@ class Nest2DConan(ConanFile):
                 )
 
     def build_requirements(self):
-        self.test_requires("standardprojectsettings/[>=0.1.0]@ultimaker/cura_11622")  # FIXME: use stable after merge
+        self.test_requires("standardprojectsettings/[>=0.2.0]@ultimaker/cura_11622")  # FIXME: use stable after merge
         if not self.conf.get("tools.build:skip_test", False, check_type=bool):
             self.test_requires("catch2/[>=3.5.2]")
 
