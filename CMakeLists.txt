@@ -50,12 +50,12 @@ elseif("${GEOMETRIES}" STREQUAL "boost")
 else()
     message(FATAL_ERROR "Unknown GEOMETRIES: ${GEOMETRIES} specified; use one of the following: 'clipper' (default), 'boost'")
 endif()
-target_compile_definitions(project_options INTERFACE LIBNEST2DLE_GEOMETRIES_${GEOMETRIES})
+target_compile_definitions(project_options INTERFACE LIBNEST2D_GEOMETRIES_${GEOMETRIES})
 
 if("${OPTIMIZER}" STREQUAL "nlopt")
     find_package(NLopt REQUIRED)
     target_link_libraries(project_options INTERFACE NLopt::nlopt)
-    list(APPEND nest2d_HDRS
+    list(APPEND nest2dle_HDRS
             include/libnest2d/optimizers/nlopt/simplex.hpp
             include/libnest2d/optimizers/nlopt/subplex.hpp
             include/libnest2d/optimizers/nlopt/genetic.hpp
@@ -64,7 +64,7 @@ if("${OPTIMIZER}" STREQUAL "nlopt")
 elseif("${OPTIMIZER}" STREQUAL "optimlib")
     find_package(armadillo REQUIRED)
     target_link_libraries(project_options INTERFACE armadillo::armadillo)
-    list(APPEND nest2d_HDRS
+    list(APPEND nest2dle_HDRS
             include/libnest2d/optimizers/optimlib/particleswarm.hpp
             )
 else()
@@ -86,14 +86,14 @@ elseif("${THREADING}" STREQUAL "none")
 else()
     message(FATAL_ERROR "Unknown OPTIMIZER: ${OPTIMIZER} specified; use one of the following: 'nlopt' (default), 'optimlib'")
 endif()
-target_compile_definitions(project_options INTERFACE LIBNEST2DLE_THREADING_${THREADING})
+target_compile_definitions(project_options INTERFACE LIBNEST2D_THREADING_${THREADING})
 
 set(libnest2dle_SRCS
         src/libnest2d.cpp
         )
 
 if(HEADER_ONLY)
-    add_library(nest2dle INTERFACE ${libnest2d_HDRS})
+    add_library(nest2dle INTERFACE ${libnest2dle_HDRS})
     target_link_libraries(nest2dle INTERFACE project_options)
     target_include_directories(nest2dle
             INTERFACE
