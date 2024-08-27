@@ -14,8 +14,8 @@ from conan.tools.scm import Version
 required_conan_version = ">=1.58.0"
 
 
-class Nest2DConan(ConanFile):
-    name = "nest2d"
+class Nest2DLEConan(ConanFile):
+    name = "nest2dle"
     description = "2D irregular bin packaging and nesting library written in modern C++"
     topics = ("conan", "cura", "prusaslicer", "nesting", "c++", "bin packaging")
     settings = "os", "compiler", "build_type", "arch"
@@ -44,7 +44,7 @@ class Nest2DConan(ConanFile):
 
     def set_version(self):
         if self.version is None:
-            self.version = "5.4.0-alpha"
+            self.version = "5.3.0"
 
     @property
     def _min_cppstd(self):
@@ -69,7 +69,7 @@ class Nest2DConan(ConanFile):
 
     def layout(self):
         cmake_layout(self)
-        self.cpp.package.libs = ["nest2d"]
+        self.cpp.package.libs = ["nest2dle"]
 
     def requirements(self):
         if self.options.geometries == "clipper":
@@ -98,7 +98,7 @@ class Nest2DConan(ConanFile):
                 )
 
     def build_requirements(self):
-        self.test_requires("standardprojectsettings/[>=0.1.0]@ultimaker/stable")
+        self.test_requires("standardprojectsettings/[>=0.1.0]@lulzbot/stable")
         if self.options.enable_testing:
             self.test_requires("catch2/[>=2.13.6]")
 

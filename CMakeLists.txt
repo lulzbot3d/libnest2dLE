@@ -1,5 +1,5 @@
 cmake_policy(SET CMP0091 NEW)
-project(libnest2d)
+project(libnest2dle)
 cmake_minimum_required(VERSION 3.20)
 find_package(standardprojectsettings REQUIRED)
 
@@ -13,7 +13,7 @@ set(THREADING std CACHE STRING "Multithreading, available options: 'std' (defaul
 add_library(project_options INTERFACE)
 set_project_warnings(project_options)
 
-set(nest2d_HDRS
+set(nest2dle_HDRS
         include/libnest2d/libnest2d.hpp
         include/libnest2d/nester.hpp
         include/libnest2d/geometry_traits.hpp
@@ -40,7 +40,7 @@ if("${GEOMETRIES}" STREQUAL "clipper")
     find_package(clipper REQUIRED)
     find_package(Boost REQUIRED)
     target_link_libraries(project_options INTERFACE clipper::clipper boost::boost)
-    list(APPEND nest2d_HDRS
+    list(APPEND nest2dle_HDRS
             include/libnest2d/clipper/clipper_polygon.hpp
             include/libnest2d/clipper/geometries.hpp
             )
@@ -50,7 +50,7 @@ elseif("${GEOMETRIES}" STREQUAL "boost")
 else()
     message(FATAL_ERROR "Unknown GEOMETRIES: ${GEOMETRIES} specified; use one of the following: 'clipper' (default), 'boost'")
 endif()
-target_compile_definitions(project_options INTERFACE LIBNEST2D_GEOMETRIES_${GEOMETRIES})
+target_compile_definitions(project_options INTERFACE LIBNEST2DLE_GEOMETRIES_${GEOMETRIES})
 
 if("${OPTIMIZER}" STREQUAL "nlopt")
     find_package(NLopt REQUIRED)
@@ -86,31 +86,31 @@ elseif("${THREADING}" STREQUAL "none")
 else()
     message(FATAL_ERROR "Unknown OPTIMIZER: ${OPTIMIZER} specified; use one of the following: 'nlopt' (default), 'optimlib'")
 endif()
-target_compile_definitions(project_options INTERFACE LIBNEST2D_THREADING_${THREADING})
+target_compile_definitions(project_options INTERFACE LIBNEST2DLE_THREADING_${THREADING})
 
-set(libnest2d_SRCS
+set(libnest2dle_SRCS
         src/libnest2d.cpp
         )
 
 if(HEADER_ONLY)
-    add_library(nest2d INTERFACE ${libnest2d_HDRS})
-    target_link_libraries(nest2d INTERFACE project_options)
-    target_include_directories(nest2d
+    add_library(nest2dle INTERFACE ${libnest2d_HDRS})
+    target_link_libraries(nest2dle INTERFACE project_options)
+    target_include_directories(nest2dle
             INTERFACE
                 $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>
                 $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
             )
 else()
     if(BUILD_SHARED_LIBS)
-        add_library(nest2d SHARED ${libnest2d_SRCS} ${libnest2d_HDRS})
+        add_library(nest2dle SHARED ${libnest2dle_SRCS} ${libnest2dle_HDRS})
         if(WIN32)
-            set_target_properties(nest2d PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
+            set_target_properties(nest2dle PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
         endif()
     else()
-        add_library(nest2d STATIC ${libnest2d_SRCS} ${libnest2d_HDRS})
+        add_library(nest2dle STATIC ${libnest2dle_SRCS} ${libnest2dle_HDRS})
     endif()
-    target_link_libraries(nest2d PUBLIC project_options)
-    target_include_directories(nest2d
+    target_link_libraries(nest2dle PUBLIC project_options)
+    target_include_directories(nest2dle
             PUBLIC
                 $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>
                 $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
