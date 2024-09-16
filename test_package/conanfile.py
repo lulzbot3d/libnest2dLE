@@ -35,4 +35,4 @@ class LibNest2DTestConan(ConanFile):
         if can_run(self):
             ext = ".exe" if self.settings.os == "Windows" else ""
             prefix_path = "" if self.settings.os == "Windows" else "./"
-            self.run(f"{prefix_path}test{ext}", env="conanrun")
+            self.run(f"{prefix_path}test{ext}", env="conanrun", scope="run")
