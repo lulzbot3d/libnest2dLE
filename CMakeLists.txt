@@ -19,8 +19,8 @@ set(nest2d_HDRS
         include/libnest2d/geometry_traits.hpp
         include/libnest2d/geometry_traits_nfp.hpp
         include/libnest2d/common.hpp
-        include/libnest2d/parallel.hpp
         include/libnest2d/optimizer.hpp
+        include/libnest2d/parallel.hpp
         include/libnest2d/utils/metaloop.hpp
         include/libnest2d/utils/rotfinder.hpp
         include/libnest2d/utils/rotcalipers.hpp
