@@ -10,7 +10,7 @@ from conan.tools.build import check_min_cppstd
 from conan.tools.microsoft import check_min_vs, is_msvc
 from conan.tools.scm import Version, Git
 
-required_conan_version = ">=1.58.0"
+required_conan_version = ">=2.7.0"
 
 
 class Nest2DConan(ConanFile):
@@ -74,8 +74,7 @@ class Nest2DConan(ConanFile):
 
     def requirements(self):
         if self.options.geometries == "clipper":
-            self.requires("clipper/6.4.2@ultimaker/cura_11622",
-                          transitive_headers=True)  # FIXME: use stable after merge
+            self.requires("clipper/6.4.2", transitive_headers=True)
         if self.options.geometries == "boost" or self.options.geometries == "clipper":
             self.requires("boost/1.83.0", transitive_headers=True)
         if self.options.optimizer == "nlopt":
