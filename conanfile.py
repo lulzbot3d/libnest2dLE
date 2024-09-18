@@ -74,7 +74,7 @@ class Nest2DConan(ConanFile):
 
     def requirements(self):
         if self.options.geometries == "clipper":
-            self.requires("clipper/6.4.2", transitive_headers=True)
+            self.requires("clipper/6.4.2@ultimaker/cura_11622", transitive_headers=True) # FIXME: use main after merge
         if self.options.geometries == "boost" or self.options.geometries == "clipper":
             self.requires("boost/1.83.0", transitive_headers=True)
         if self.options.optimizer == "nlopt":
