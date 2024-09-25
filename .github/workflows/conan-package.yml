@@ -27,5 +27,5 @@ jobs:
   conan-package:
     uses: ultimaker/cura-workflows/.github/workflows/conan-package.yml@CURA-11622_conan_v2
     with:
-      project_name: nest2d
+      package_name: nest2d
     secrets: inherit
