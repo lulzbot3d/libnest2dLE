@@ -1,9 +1,10 @@
 # libnest2dLE
 
-[![Conan Package](https://github.com/lulzbot3d/libnest2dLE/actions/workflows/conan-package.yml/badge.svg)](https://github.com/lulzbot3d/libnest2dLE/actions/workflows/conan-package.yml)
-[![Unit Tests](https://github.com/lulzbot3d/libnest2dLE/actions/workflows/unit-test.yml/badge.svg)](https://github.com/lulzbot3d/libnest2dLE/actions/workflows/unit-test.yml)
-[![Repo Size](https://img.shields.io/github/repo-size/lulzbot3d/libnest2dLE?style=flat)](https://github.com/lulzbot3d/libnest2dLE)
-[![License](https://img.shields.io/github/license/lulzbot3d/libnest2dLE?style=flat)](https://github.com/lulzbot3d/libnest2dLE/blob/main/LICENSE)
+[![Conan Badge]][Conan]
+[![Unit Test Badge]][Unit Test]
+
+[![Size Badge]][Size]
+[![License Badge]][License]
 
 > **Notice:**  
 > This library was developed as part of the [PrusaSlicer](https://github.com/prusa3d/PrusaSlicer) project. **You can find the original version [here](https://github.com/prusa3d/PrusaSlicer/tree/master/src/libnest2d).** This repository is a continuation of that original project by UltiMaker, now forked for use in Cura LulzBot Edition.
@@ -210,3 +211,15 @@ For the record, **Slic3r PE** version 2.0 is now known as **PrusaSlicer 2.0**.
   Problem Utilising the No Fit Polygon](http://www.graham-kendall.com/papers/k2001.pdf)
 - [A comprehensive and robust procedure for obtaining the nofit polygon
   using Minkowski sums](https://www.sciencedirect.com/science/article/pii/S0305054806000669)
+
+<!------------------------------------------------------------------------------------------------------->
+
+[Conan Badge]: https://img.shields.io/github/actions/workflow/status/lulzbot3d/libnest2dLE/conan-package.yml?style=for-the-badge&logoColor=white&logo=Conan&label=Conan%20Package
+[Unit Test Badge]: https://img.shields.io/github/actions/workflow/status/lulzbot3d/libnest2dLE/unit-test.yml?style=for-the-badge&logoColor=white&logo=Codacy&label=Unit%20Test
+[Size Badge]: https://img.shields.io/github/repo-size/lulzbot3d/libnest2dLE?style=for-the-badge&logoColor=white&logo=GoogleAnalytics
+[License Badge]: https://img.shields.io/github/license/lulzbot3d/libnest2dLE?style=for-the-badge&logoColor=white&logo=GNU
+
+[Conan]: https://github.com/lulzbot3d/libnest2dLE/actions/workflows/conan-package.yml
+[Unit Test]: https://github.com/lulzbot3d/libnest2dLE/actions/workflows/unit-test.yml
+[Size]: https://github.com/lulzbot3d/libnest2dLE
+[License]: LICENSE

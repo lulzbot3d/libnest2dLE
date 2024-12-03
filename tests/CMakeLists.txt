@@ -11,7 +11,7 @@ set(SRC_TEST
         )
 
 add_executable(tests ${SRC_TEST})
-target_link_libraries(tests PUBLIC project_options nest2dle Catch2::Catch2WithMain)
+target_link_libraries(tests PUBLIC project_options nest2d Catch2::Catch2WithMain)
 
 catch_discover_tests(tests
         TEST_PREFIX
