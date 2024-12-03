@@ -69,7 +69,7 @@ class Nest2DLEConan(ConanFile):
 
     def layout(self):
         cmake_layout(self)
-        self.cpp.package.libs = ["nest2dle"]
+        self.cpp.package.libs = ["nest2d"]
 
     def requirements(self):
         if self.options.geometries == "clipper":
