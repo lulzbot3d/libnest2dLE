@@ -74,7 +74,7 @@ class Nest2DConan(ConanFile):
 
     def requirements(self):
         if self.options.geometries == "clipper":
-            self.requires("clipper/6.4.2@ultimaker/cura_11622", transitive_headers=True) # FIXME: use main after merge
+            self.requires("clipper/6.4.2@ultimaker/stable", transitive_headers=True)
         if self.options.geometries == "boost" or self.options.geometries == "clipper":
             self.requires("boost/1.83.0", transitive_headers=True)
         if self.options.optimizer == "nlopt":
@@ -98,7 +98,7 @@ class Nest2DConan(ConanFile):
                 )
 
     def build_requirements(self):
-        self.test_requires("standardprojectsettings/[>=0.2.0]@ultimaker/cura_11622")  # FIXME: use stable after merge
+        self.test_requires("standardprojectsettings/[>=0.2.0]@ultimaker/stable")
         if not self.conf.get("tools.build:skip_test", False, check_type=bool):
             self.test_requires("catch2/[>=3.5.2]")
 
