@@ -49,14 +49,14 @@ jobs:
   conan-recipe-version:
     uses: lulzbot3d/cura-le-workflows/.github/workflows/conan-recipe-version.yml@main
     with:
-      project_name: nest2dle
+      project_name: nest2d
 
   unit-test:
     uses: lulzbot3d/cura-le-workflows/.github/workflows/unit-test.yml@main
     needs: [ conan-recipe-version ]
     with:
         recipe_id_full: ${{ needs.conan-recipe-version.outputs.recipe_id_full }}
-        conan_extra_args: "-o nest2dle:enable_testing=True"
+        conan_extra_args: "-o nest2d:enable_testing=True"
         unit_test_cmd: "ctest --output-junit engine_test.xml"
         unit_test_dir: "build/Release/"
         build: true
