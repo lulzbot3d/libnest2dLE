@@ -5,13 +5,12 @@ from os import path
 from conan import ConanFile
 from conan.errors import ConanInvalidConfiguration
 from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake, cmake_layout
-from conan.tools.files import AutoPackager, files, collect_libs, copy
+from conan.tools.files import AutoPackager, files, collect_libs, copy, update_conandata
 from conan.tools.build import check_min_cppstd
 from conan.tools.microsoft import check_min_vs, is_msvc
-from conan.tools.scm import Version
+from conan.tools.scm import Version, Git
 
-
-required_conan_version = ">=1.58.0"
+required_conan_version = ">=2.7.0"
 
 
 class Nest2DLEConan(ConanFile):
@@ -20,31 +19,33 @@ class Nest2DLEConan(ConanFile):
     topics = ("conan", "cura", "prusaslicer", "nesting", "c++", "bin packaging")
     settings = "os", "compiler", "build_type", "arch"
     build_policy = "missing"
+    package_type = "library"
+    implements = ["auto_header_only"]
 
     options = {
         "shared": [True, False],
         "fPIC": [True, False],
-        "tests": [True, False],
         "header_only": [True, False],
-        "enable_testing": [True, False],
         "geometries": ["clipper", "boost"],
         "optimizer": ["nlopt", "optimlib"],
         "threading": ["std", "tbb", "omp", "none"]
     }
     default_options = {
         "shared": True,
-        "tests": False,
         "fPIC": True,
         "header_only": False,
-        "enable_testing": False,
         "geometries": "clipper",
         "optimizer": "nlopt",
         "threading": "std"
     }
 
     def set_version(self):
-        if self.version is None:
-            self.version = "5.3.0"
+        if not self.version:
+            self.version = self.conan_data["version"]
+
+    def export(self):
+        git = Git(self)
+        update_conandata(self, {"version": self.version, "commit": git.get_commit()})
 
     @property
     def _min_cppstd(self):
@@ -73,18 +74,17 @@ class Nest2DLEConan(ConanFile):
 
     def requirements(self):
         if self.options.geometries == "clipper":
-            self.requires("boost/1.82.0", transitive_headers=True)
-            self.requires("clipper/6.4.2", transitive_headers=True)
-        if self.options.geometries == "boost":
-            self.requires("boost/1.82.0", transitive_headers=True)
+            self.requires("clipper/6.4.2@lulzbot/stable", transitive_headers=True)
+        if self.options.geometries == "boost" or self.options.geometries == "clipper":
+            self.requires("boost/1.83.0", transitive_headers=True)
         if self.options.optimizer == "nlopt":
-            self.requires("nlopt/2.7.0", transitive_headers=True)
+            self.requires("nlopt/2.7.1", transitive_headers=True)
         if self.options.optimizer == "optimlib":
-            self.requires("armadillo/10.7.3", transitive_headers=True)
+            self.requires("armadillo/12.6.4", transitive_headers=True)
         if self.options.threading == "tbb":
             self.requires("tbb/2020.3", transitive_headers=True)
         if self.options.threading == "omp":
-            self.requires("llvm-openmp/12.0.1", transitive_headers=True)
+            self.requires("llvm-openmp/17.0.6", transitive_headers=True)
 
     def validate(self):
         if self.settings.compiler.cppstd:
@@ -98,10 +98,9 @@ class Nest2DLEConan(ConanFile):
                 )
 
     def build_requirements(self):
-        self.test_requires("standardprojectsettings/[>=0.1.0]@lulzbot/stable")
-        if self.options.enable_testing:
-            self.test_requires("catch2/[>=2.13.6]")
-
+        self.test_requires("standardprojectsettings/[>=0.2.0]@lulzbot/stable")
+        if not self.conf.get("tools.build:skip_test", False, check_type=bool):
+            self.test_requires("catch2/[>=3.5.2]")
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -117,11 +116,11 @@ class Nest2DLEConan(ConanFile):
         if self.options.threading == "tbb":
             self.options["tbb"].shared = True if self.options.header_only else self.options.shared
         if self.options.threading == "omp":
-            self.options["llvm-openmp"].shared =True if self.options.header_only else self.options.shared
+            self.options["llvm-openmp"].shared = True if self.options.header_only else self.options.shared
 
     def generate(self):
         deps = CMakeDeps(self)
-        if self.options.enable_testing:
+        if not self.conf.get("tools.build:skip_test", False, check_type=bool):
             deps.build_context_activated = ["catch2"]
             deps.build_context_build_modules = ["catch2"]
         deps.generate()
@@ -130,7 +129,7 @@ class Nest2DLEConan(ConanFile):
         tc.variables["HEADER_ONLY"] = self.options.header_only
         if not self.options.header_only:
             tc.variables["BUILD_SHARED_LIBS"] = self.options.shared
-        tc.variables["ENABLE_TESTING"] = self.options.enable_testing
+        tc.variables["ENABLE_TESTING"] = not self.conf.get("tools.build:skip_test", False, check_type=bool)
         tc.variables["GEOMETRIES"] = self.options.geometries
         tc.variables["OPTIMIZER"] = self.options.optimizer
         tc.variables["THREADING"] = self.options.threading
@@ -163,7 +162,3 @@ class Nest2DLEConan(ConanFile):
         self.cpp_info.defines.append(f"LIBNEST2D_THREADING_{self.options.threading}")
         if self.settings.os in ["Linux", "FreeBSD", "Macos"] and self.options.threading == "std":
             self.cpp_info.system_libs.append("pthread")
-
-    def package_id(self):
-        if self.options.header_only:
-            self.info.clear()

@@ -1,4 +1,3 @@
----
 name: unit-test
 
 on:
@@ -18,13 +17,11 @@ on:
       - '.github/workflows/requirements*'
     branches:
       - main
-      - master
       - 'CURA-*'
-      - '[0-9].[0-9]'
-      - '[0-9].[0-9][0-9]'
-    tags:
-      - '[0-9].[0-9].[0-9]'
-      - '[0-9].[0-9][0-9].[0-9]'
+      - 'PP-*'
+      - 'NP-*'
+      - '[0-9].[0-9]*'
+      - '[0-9].[0-9][0-9]*'
   pull_request:
     paths:
       - 'src/**'
@@ -41,23 +38,15 @@ on:
       - '.github/workflows/requirements*'
     branches:
       - main
-      - master
-      - '[0-9].[0-9]'
-      - '[0-9].[0-9][0-9]'
+      - 'CURA-*'
+      - 'PP-*'
+      - 'NP-*'
+      - '[0-9].[0-9]*'
+      - '[0-9].[0-9][0-9]*'
 
 jobs:
-  conan-recipe-version:
-    uses: lulzbot3d/cura-le-workflows/.github/workflows/conan-recipe-version.yml@main
+  testing:
+    name: Run unit tests
+    uses: lulzbot3d/CuraLE_Workflows/.github/workflows/unit-test.yml@main
     with:
-      project_name: nest2d
-
-  unit-test:
-    uses: lulzbot3d/cura-le-workflows/.github/workflows/unit-test.yml@main
-    needs: [ conan-recipe-version ]
-    with:
-        recipe_id_full: ${{ needs.conan-recipe-version.outputs.recipe_id_full }}
-        conan_extra_args: "-o nest2d:enable_testing=True"
-        unit_test_cmd: "ctest --output-junit engine_test.xml"
-        unit_test_dir: "build/Release/"
-        build: true
-    secrets: inherit
+      test_use_ctest: true
