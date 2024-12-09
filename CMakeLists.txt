@@ -1,6 +1,6 @@
+cmake_minimum_required(VERSION 3.20)
 cmake_policy(SET CMP0091 NEW)
 project(libnest2dle)
-cmake_minimum_required(VERSION 3.20)
 find_package(standardprojectsettings REQUIRED)
 
 option(BUILD_SHARED_LIBS "Build shared libs instead of static (applies for dependencies as well)" OFF)
@@ -19,8 +19,8 @@ set(nest2d_HDRS
         include/libnest2d/geometry_traits.hpp
         include/libnest2d/geometry_traits_nfp.hpp
         include/libnest2d/common.hpp
-        include/libnest2d/parallel.hpp
         include/libnest2d/optimizer.hpp
+        include/libnest2d/parallel.hpp
         include/libnest2d/utils/metaloop.hpp
         include/libnest2d/utils/rotfinder.hpp
         include/libnest2d/utils/rotcalipers.hpp

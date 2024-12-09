@@ -1,72 +1,28 @@
----
 name: conan-package
 
-# Exports the recipe, sources and binaries for Mac, Windows and Linux and upload these to the server such that these can
-# be used downstream.
-#
-# It should run on pushes against main or CURA-* branches, but it will only create the binaries for main and release branches
-
 on:
-    push:
-        paths:
-            - 'src/**'
-            - 'include/**'
-            - 'test_package/**'
-            - 'tests/**'
-            - 'cmake/**'
-            - 'conanfile.py'
-            - 'conandata.yml'
-            - 'CMakeLists.txt'
-            - 'requirements.txt'
-            - '.github/workflows/conan-package.yml'
-            - '.github/workflows/requirements*'
-        branches:
-            - main
-            - master
-            - 'CURA-*'
-            - '[0-9].[0-9]'
-            - '[0-9].[0-9][0-9]'
-        tags:
-            - '[0-9].[0-9].[0-9]*'
-            - '[0-9].[0-9][0-9].[0-9]*'
+  push:
+    paths:
+      - 'src/**'
+      - 'include/**'
+      - 'test_package/**'
+      - 'tests/**'
+      - 'cmake/**'
+      - 'conanfile.py'
+      - 'conandata.yml'
+      - 'CMakeLists.txt'
+      - 'requirements.txt'
+      - '.github/workflows/conan-package.yml'
+      - '.github/workflows/requirements*'
+    branches:
+      - main
+      - 'CURA-*'
+      - 'PP-*'
+      - 'NP-*'
+      - '[0-9].[0-9]*'
+      - '[0-9].[0-9][0-9]*'
 
 jobs:
-    conan-recipe-version:
-        uses: lulzbot3d/cura-le-workflows/.github/workflows/conan-recipe-version.yml@main
-        with:
-            project_name: nest2d
-
-    conan-package-export:
-        needs: [ conan-recipe-version ]
-        uses: lulzbot3d/cura-le-workflows/.github/workflows/conan-recipe-export.yml@main
-        with:
-            recipe_id_full: ${{ needs.conan-recipe-version.outputs.recipe_id_full }}
-            recipe_id_latest: ${{ needs.conan-recipe-version.outputs.recipe_id_latest }}
-        secrets: inherit
-
-    conan-package-create-windows:
-        if: ${{ (github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'master' || needs.conan-recipe-version.outputs.is_release_branch == 'true' )) }}
-        needs: [ conan-recipe-version, conan-package-export ]
-
-        uses: lulzbot3d/cura-le-workflows/.github/workflows/conan-package-create-windows.yml@main
-        with:
-            recipe_id_full: ${{ needs.conan-recipe-version.outputs.recipe_id_full }}
-        secrets: inherit
-
-    conan-package-create-macos:
-        if: ${{ (github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'master' || needs.conan-recipe-version.outputs.is_release_branch == 'true')) }}
-        needs: [ conan-recipe-version, conan-package-export ]
-
-        uses: lulzbot3d/cura-le-workflows/.github/workflows/conan-package-create-macos.yml@main
-        with:
-            recipe_id_full: ${{ needs.conan-recipe-version.outputs.recipe_id_full }}
-        secrets: inherit
-
-    conan-package-create-linux:
-        if: ${{ (github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'master' || needs.conan-recipe-version.outputs.is_release_branch == 'true')) }}
-        needs: [ conan-recipe-version, conan-package-export ]
-
-        uses: lulzbot3d/cura-le-workflows/.github/workflows/conan-package-create-linux.yml@main
-        with:
-            recipe_id_full: ${{ needs.conan-recipe-version.outputs.recipe_id_full }}
-        secrets: inherit
+  conan-package:
+    uses: lulzbot3d/CuraLE_Workflows/.github/workflows/conan-package.yml@main
+    secrets: inherit
