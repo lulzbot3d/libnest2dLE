@@ -76,7 +76,7 @@ class Nest2DConan(ConanFile):
         if self.options.geometries == "clipper":
             self.requires("clipper/6.4.2@ultimaker/stable", transitive_headers=True)
         if self.options.geometries == "boost" or self.options.geometries == "clipper":
-            self.requires("boost/1.83.0", transitive_headers=True)
+            self.requires("boost/1.86.0", transitive_headers=True)
         if self.options.optimizer == "nlopt":
             self.requires("nlopt/2.7.1", transitive_headers=True)
         if self.options.optimizer == "optimlib":
@@ -98,7 +98,7 @@ class Nest2DConan(ConanFile):
                 )
 
     def build_requirements(self):
-        self.test_requires("standardprojectsettings/[>=0.2.0]@ultimaker/stable")
+        self.test_requires("standardprojectsettings/[>=0.2.0]")
         if not self.conf.get("tools.build:skip_test", False, check_type=bool):
             self.test_requires("catch2/[>=3.5.2]")
 
