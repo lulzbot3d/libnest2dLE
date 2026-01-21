@@ -5,7 +5,7 @@ from os import path
 from conan import ConanFile
 from conan.errors import ConanInvalidConfiguration
 from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake, cmake_layout
-from conan.tools.files import AutoPackager, files, collect_libs, copy, update_conandata
+from conan.tools.files import files, collect_libs, copy, update_conandata
 from conan.tools.build import check_min_cppstd
 from conan.tools.microsoft import check_min_vs, is_msvc
 from conan.tools.scm import Version, Git
@@ -15,6 +15,8 @@ required_conan_version = ">=2.7.0"
 
 class Nest2DLEConan(ConanFile):
     name = "nest2d"
+    author = "UltiMaker"
+    url = "https://github.com/Ultimaker/libnest2d"
     description = "2D irregular bin packaging and nesting library written in modern C++"
     topics = ("conan", "cura", "prusaslicer", "nesting", "c++", "bin packaging")
     settings = "os", "compiler", "build_type", "arch"
@@ -22,13 +24,15 @@ class Nest2DLEConan(ConanFile):
     package_type = "library"
     implements = ["auto_header_only"]
 
+    python_requires = "npmpackage/[>=1.0.0]"
     options = {
         "shared": [True, False],
         "fPIC": [True, False],
         "header_only": [True, False],
         "geometries": ["clipper", "boost"],
         "optimizer": ["nlopt", "optimlib"],
-        "threading": ["std", "tbb", "omp", "none"]
+        "threading": ["std", "tbb", "omp", "none"],
+        "with_js_bindings": [True, False]
     }
     default_options = {
         "shared": True,
@@ -36,7 +40,8 @@ class Nest2DLEConan(ConanFile):
         "header_only": False,
         "geometries": "clipper",
         "optimizer": "nlopt",
-        "threading": "std"
+        "threading": "std",
+        "with_js_bindings": False
     }
 
     def set_version(self):
@@ -67,16 +72,28 @@ class Nest2DLEConan(ConanFile):
         copy(self, "*", path.join(self.recipe_folder, "include"), path.join(self.export_sources_folder, "include"))
         copy(self, "*", path.join(self.recipe_folder, "tests"), path.join(self.export_sources_folder, "tests"))
         copy(self, "*", path.join(self.recipe_folder, "tools"), path.join(self.export_sources_folder, "tools"))
+        copy(self, "*", path.join(self.recipe_folder, "libnest2d_js"),
+             os.path.join(self.export_sources_folder, "libnest2d_js"))
 
     def layout(self):
         cmake_layout(self)
+        self.cpp.build.bin = []
+        self.cpp.build.bindirs = []
+        self.cpp.package.bindirs = ["bin"]
         self.cpp.package.libs = ["nest2d"]
+        if self.settings.os == "Emscripten":
+            self.cpp.build.bin = ["libnest2d_js.js"]
+            self.cpp.package.bin = ["libnest2d_js.js"]
+            self.cpp.build.bindirs += ["libnest2d_js"]
+
+        self.cpp.package.includedirs = ["include"]
 
     def requirements(self):
+        self.requires("spdlog/[>=1.14.1]", transitive_headers=True)
         if self.options.geometries == "clipper":
             self.requires("clipper/6.4.2@lulzbot/stable", transitive_headers=True)
         if self.options.geometries == "boost" or self.options.geometries == "clipper":
-            self.requires("boost/1.86.0", transitive_headers=True)
+            self.requires("boost/1.88.0", transitive_headers=True)
         if self.options.optimizer == "nlopt":
             self.requires("nlopt/2.7.1", transitive_headers=True)
         if self.options.optimizer == "optimlib":
@@ -133,6 +150,7 @@ class Nest2DLEConan(ConanFile):
         tc.variables["GEOMETRIES"] = self.options.geometries
         tc.variables["OPTIMIZER"] = self.options.optimizer
         tc.variables["THREADING"] = self.options.threading
+        tc.variables["WITH_JS_BINDINGS"] = self.options.get_safe("with_js_bindings", False)
 
         tc.generate()
 
@@ -142,9 +160,25 @@ class Nest2DLEConan(ConanFile):
         cmake.build()
         cmake.install()
 
+    def deploy(self):
+        if self.settings.os == "Emscripten" or self.options.get_safe("with_js_bindings", False):
+            copy(self, "libnest2d_js*", src=os.path.join(self.package_folder, "bin"), dst=self.install_folder)
+            copy(self, "*", src=os.path.join(self.package_folder, "bin"), dst=self.install_folder)
+
     def package(self):
-        packager = AutoPackager(self)
-        packager.run()
+
+        if self.settings.os == "Emscripten" or self.options.get_safe("with_js_bindings", False):
+            copy(self, pattern="libnest2d_js*", src=os.path.join(self.build_folder, "libnest2d_js"),
+                 dst=os.path.join(self.package_folder, "bin"))
+            copy(self, f"*.d.ts", src=self.build_folder, dst=os.path.join(self.package_folder, "bin"), keep_path = False)
+            copy(self, f"*.js", src=self.build_folder, dst=os.path.join(self.package_folder, "bin"), keep_path = False)
+            copy(self, f"*.wasm", src=self.build_folder, dst=os.path.join(self.package_folder, "bin"), keep_path = False)
+        copy(self, pattern="*.hpp", src=os.path.join(self.source_folder, "include"), dst=os.path.join(self.package_folder, "include"))
+        copy(self, pattern="*.a", src=self.build_folder, dst=os.path.join(self.package_folder, "lib"), keep_path=False)
+        copy(self, pattern="*.so", src=self.build_folder, dst=os.path.join(self.package_folder, "lib"), keep_path=False)
+        copy(self, pattern="*.lib", src=self.build_folder, dst=os.path.join(self.package_folder, "lib"), keep_path=False)
+        copy(self, pattern="*.dll", src=self.build_folder, dst=os.path.join(self.package_folder, "bin"), keep_path=False)
+        copy(self, pattern="*.dylib", src=self.build_folder, dst=os.path.join(self.package_folder, "lib"), keep_path=False)
 
         # Remove the header files from options not used in this package
         if self.options.geometries != "clipper":
@@ -162,3 +196,10 @@ class Nest2DLEConan(ConanFile):
         self.cpp_info.defines.append(f"LIBNEST2D_THREADING_{self.options.threading}")
         if self.settings.os in ["Linux", "FreeBSD", "Macos"] and self.options.threading == "std":
             self.cpp_info.system_libs.append("pthread")
+
+        # npm package json for Emscripten builds
+        if self.settings.os == "Emscripten" or self.options.get_safe("with_js_bindings", False):
+            self.python_requires["npmpackage"].module.conf_package_json(self)
+            # Expose the path to the JS/WASM assets for consumers
+            js_asset_path = os.path.join(self.package_folder, "bin")
+            self.conf_info.define("user.nest2d:js_path", js_asset_path)
